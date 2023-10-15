@@ -12,7 +12,7 @@ public class Pallet
 
     public Pallet(string palletID, Type palletType)
     {
-        PalletID = palletID;
+        // PalletID = GenerateID();
         PalletType = palletType;
         TimeStamp = DateTime.Now;
     }
@@ -25,6 +25,7 @@ public class Pallet
     }
 
     // REFACTOR: May want to use a string as an ID template.
+    // TODO: Ask .B how to implement according to above.
     // public static string GenerateID()
     // {
     //     Random rnd = new Random();

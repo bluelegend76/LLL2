@@ -5,10 +5,9 @@ public class Slot
     // Initialize list to hold items for one storage slot.
     // TODO: Make Items private + rename to _slot(s).
     public List<Pallet> Items = new List<Pallet>();
-    // public List<Pallet> Items { get; set; } = new List<Pallet>();
-    // public List<Pallet> Pallets = new List<Pallet>();
-    // public static List<Pallet> Init() => new List<Pallet>();
     // public List<Pallet> ASlot = new List<Pallet>();
+    public Type Capacity { get; set; } = Type.Hel;
+      // public static List<Pallet> Init() => new List<Pallet>();
     // public Slot()
     // {
     //     Items = new List<Pallet>();
@@ -17,8 +16,7 @@ public class Slot
 
     // IsAvailable()
     // = Match slot-capacity with Pallet Type
-
-    // TODO: NextMatching()
+    // TODO: NextMatching()/NextAvailable()
     // + match with capacity
 
     public override string ToString()

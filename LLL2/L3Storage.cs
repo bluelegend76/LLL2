@@ -15,7 +15,8 @@ internal class L3Storage
         // l3Storage.Initialize();
         var l3Storage = new Storage();
         // l3Storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:05:32"));
-        Console.WriteLine(l3Storage);
+        // Console.WriteLine(l3Storage);
+        Storage.Inventory(l3Storage);
         Console.ReadKey();
         // l3Storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:05:32"));
         // l3Storage[1].Items.Add(new Pallet("BD234", Type.Hel, "2023-09-20 17:05:32"));
