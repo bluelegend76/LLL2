@@ -3,45 +3,72 @@ namespace LLL2;
 public class Storage
 {
     // Initialize()
-    // private Slot[] _storage = new Slot[20];
-    public static Slot[] L3Storage = new Slot[20];
+    private Slot[] _storage;
+    // = new Slot[20];
+    private readonly int _defaultCapacity = 20;
+    private static HashSet<string> _assignedIDs = new HashSet<string>();
 
-    // meningar=is/as stycken=ip/ap ord=iw/aw kodblock=b / iB/aB
-    public static void Initialize()
+    public Storage()
     {
-        foreach (var slot in L3Storage)
+        _storage = new Slot[_defaultCapacity];
+        for (var i = 0; i < _storage.Length; i++)
         {
-            slot.Items = new List<Pallet>();
+            _storage[i] = new Slot();
         }
-        L3Storage[0].Items.Add(new Pallet("AB123", Type.Hel));
-        L3Storage[1].Items.Add(new Pallet("BD234", Type.Hel));
-        L3Storage[4].Items.Add(new Pallet("CB123", Type.Hel));
-        L3Storage[8].Items.Add(new Pallet("XX672", Type.Halv));
-        L3Storage[10].Items.Add(new Pallet("YY423", Type.Halv));
-        L3Storage[18].Items.Add(new Pallet("YZ225", Type.Halv));
-            // = new Pallet("AB123", Type.Hel);
+        // HACK: = Move to test-function.
+        _storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:05:32"));
+        _storage[1].Items.Add(new Pallet("BD234", Type.Halv, "2023-09-15 17:05:32"));
+        _storage[1].Items.Add(new Pallet("DE345", Type.Halv, "2023-09-15 17:05:32"));
+        // LATER: Possible checkup on ref in foreach loop
+        // foreach (ref Slot slot in L3Storage)
+        // {
+        //     slot = new Slot();
+        // }
         // return _storage;
     }
-    // l3Storage[0].Add = new Pallet();
-
-    // lllStorage[0]  = "LL001\tHel\t2023-08-01\t12:00:00";
-    // lllStorage[2]  = "LL003\tHalv\t2023-08-10\t12:30:00";
-    // lllStorage[5]  = "LL004\tHel\t2023-08-14\t12:24:00";
-    // lllStorage[8]  = "LL007\tHalv\t2023-09-01\t12:48:00";
-    // lllStorage[10] = "LL009\tHel\t2023-09-24\t14:50:00";
-    // lllStorage[18] = "LL017\tHalv\t2023-09-14\t16:24:00";
-    // return lllStorage;
+    
+    // public void Add(Pallet pallet)
+    // {
+    //     _storage[0].Add = pallet;
 
     // Store()
     // TODO: Initialize HashSet to hold unique ID:s.
+    // TODO: Add case insensitivity.
 
     // NextAvailable()
 
     // Inventory()
+    // TODO: Utilize three linked ToString-overrides.
 
     // Move()
 
     // Get()
+    //  CalculateFee()
+    // log to storage.log.csv
 
-    // Optimize()
+    // Optimize()/Pack()
+    
+    public override string ToString()
+    {
+        var n = 1;
+        var result = "";
+        result += "  ID\tTyp\tAnkom" + Environment.NewLine;
+        result += "------------------------------------" + Environment.NewLine;
+        foreach (var slot in _storage)
+        {
+            result += $"Plats {n}:" + Environment.NewLine;
+            result += slot;
+            n++;
+        }
+        return result;
+        // for (var i = 0; i < _storage.Length; i++)
+        // {
+        //     result += $"Plats {i+1}:" + Environment.NewLine;
+        //     result += _storage[i];
+        //     // + Environment.NewLine;
+        // }
+        // Console.WriteLine(slot.ToString());
+        // return result;
+    }
+
 }
