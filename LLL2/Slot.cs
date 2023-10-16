@@ -3,14 +3,15 @@ namespace LLL2;
 public class Slot
 {
     // Initialize list to hold items for one storage slot.
-    // TODO: Make Items private + rename to _slot(s).
+    // TODO: Make Items private + rename to _slot(s)?.
     public List<Pallet> Items = new List<Pallet>();
-    // public List<Pallet> ASlot = new List<Pallet>();
-    public Type Capacity { get; set; } = Type.Hel;
+    // Pallets[!!]
+    public Type CapacityLeft { get; set; } = Type.Hel;
+    // REFACTOR?: FreeCapacity
       // public static List<Pallet> Init() => new List<Pallet>();
     // public Slot()
     // {
-    //     Items = new List<Pallet>();
+    //     Pallets = new List<Pallet>();
     // }
     // = new List<Pallet>();
 
@@ -18,6 +19,8 @@ public class Slot
     // = Match slot-capacity with Pallet Type
     // TODO: NextMatching()/NextAvailable()
     // + match with capacity
+
+    // AdjustCapacity(Slot s)
 
     public override string ToString()
     {

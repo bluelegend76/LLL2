@@ -2,6 +2,7 @@ namespace LLL2;
 
 // CAN HAS FUNNY LANGUAGES?
 using System.Globalization;
+using System.Text;
 using static Thread;
 
 public class Pallet
@@ -10,7 +11,7 @@ public class Pallet
     public Type PalletType { get; set; }
     public DateTime TimeStamp { get; set; }
 
-    public Pallet(string palletID, Type palletType)
+    public Pallet(Type palletType)
     {
         // PalletID = GenerateID();
         PalletType = palletType;
@@ -25,29 +26,18 @@ public class Pallet
     }
 
     // REFACTOR: May want to use a string as an ID template.
+    // example: "aaa00000"
     // TODO: Ask .B how to implement according to above.
-    // public static string GenerateID()
-    // {
-    //     Random rnd = new Random();
-    //     StringBuilder sb = new StringBuilder();
-    //
-    //     for (int i = 0; i < 2; i++)
-    //     {
-    //         char rndChar = (char)('A' + rnd.Next(26));
-    //         char rndChar = (char)('A' + rnd.Next(65, 90));
-    //         sb.Append(randChar);
-    //     }
-    //     for (int i = 0; i < 3; i++)
-    //     {
-    //         int randInt = rnd.Next(1000);
-    //         sb.Append(randInt);
-    //     }
-    //     return sb.ToString();
-    // }
+    public static string GenerateID()
+    {
+    // UNTIL ID IS UNIQUE:
+    // TODO: Use 'LL' + Incrementer Instead[!!]
+        return String.Empty;
+    }
 
     public override string ToString()
     {
         CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE");
-        return $"  {PalletID}\t{PalletType}\t{TimeStamp}";
+        return $"  {PalletID} \t{PalletType} \t{TimeStamp}";
     }
 }

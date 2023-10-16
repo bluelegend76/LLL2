@@ -2,14 +2,8 @@ namespace LLL2;
 
 public class Storage
 {
-    // Initialize()
     private Slot[] _storage;
-
-    // = new Slot[20];
     private readonly int _defaultCapacity = 20;
-    // DONE: HashSet to hold unique ID:s.
-    private static HashSet<string> _assignedIDs = new HashSet<string>();
-    // _assignedIDs.UnionWith(x => new[] { x + "AB123", x + "BD234", x + "DE345" });
 
     public Storage()
     {
@@ -18,24 +12,17 @@ public class Storage
         {
             _storage[i] = new Slot();
         }
-
-        // HACK: = Move to test-function.
-        _storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:05:32"));
-        _storage[1].Items.Add(new Pallet("BD234", Type.Halv, "2023-09-15 17:05:32"));
-        _storage[1].Items.Add(new Pallet("DE345", Type.Halv, "2023-09-15 17:05:32"));
-
-        var testpalletsIDs = new string[] { "AB123", "BD234", "DE345" };
-        foreach (var value in testpalletsIDs)
-        {
-            _assignedIDs.Add(value);
-        }
-        // _assignedIDs.UnionWith(x => new[] { x + "AB123", x + "BD234", x + "DE345" });
         // LATER: Possible checkup on ref in foreach loop
         // foreach (ref Slot slot in L3Storage)
         // {
         //     slot = new Slot();
         // }
         // return _storage;
+
+        // HACK: = Move to test-function.
+        _storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:05:32"));
+        _storage[1].Items.Add(new Pallet("BD234", Type.Halv, "2023-09-15 17:05:32"));
+        _storage[1].Items.Add(new Pallet("DE345", Type.Halv, "2023-09-15 17:05:32"));
     }
 
     // public void Add(Pallet pallet)
@@ -46,7 +33,7 @@ public class Storage
 
     // NextAvailable()
 
-    public static void Inventory(Storage storage)
+    public static void Show(Storage storage)
     {
         Console.WriteLine(storage);
     }
@@ -54,7 +41,9 @@ public class Storage
 
     // Move()
 
-    // Get()
+    // Get()  GetPallet()
+    // Fetch()   Deliver()
+    // Remove()
     // TODO: Add case insensitivity.
     //  CalculateFee()
     // TODO: log to storage.log.csv
