@@ -2,8 +2,8 @@ namespace LLL2;
 
 // CAN HAS FUNNY LANGUAGES?
 using System.Globalization;
-using System.Text;
 using static Thread;
+using System.Text;
 
 public class Pallet
 {
@@ -30,8 +30,7 @@ public class Pallet
     // TODO: Ask .B how to implement according to above.
     public static string GenerateID()
     {
-    // UNTIL ID IS UNIQUE:
-    // TODO: Use 'LL' + Incrementer Instead[!!]
+        // TODO: Use 'LL' + Incrementer Instead[!!]
         return String.Empty;
     }
 

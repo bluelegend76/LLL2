@@ -4,5 +4,5 @@ public enum Type
 {
     Halv = 1,
     Hel = 2
-    // TODO: Add a Type.None = 0(?)
+    // TODO: Add a Type.None|Full = 0(?)
 }
