@@ -36,7 +36,9 @@ internal class L3Storage
         Console.WriteLine("---- L3 Storage ----");
         Console.WriteLine();
         Console.WriteLine("Huvudmeny:");
-        options.ForEach(option => Console.WriteLine(option));
+        // Using a method group instead of a lambda expression
+        options.ForEach(Console.WriteLine);
+        // options.ForEach(option => Console.WriteLine(option));
         Console.WriteLine();
         Console.Write("Ditt val: ");
     }
