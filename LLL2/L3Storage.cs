@@ -16,6 +16,7 @@ internal class L3Storage
           // Console.WriteLine(l3Storage);
         Storage.Show(l3Storage);
         Console.ReadKey();
+        // l3Storage.NextAvailable(l3Storage, new Pallet(10, 10, 10, 10, 10));
         Menu();
     }
 
@@ -38,7 +39,7 @@ internal class L3Storage
         Console.WriteLine("Huvudmeny:");
         // Using a method group instead of a lambda expression
         options.ForEach(Console.WriteLine);
-        // options.ForEach(option => Console.WriteLine(option));
+          // options.ForEach(option => Console.WriteLine(option));
         Console.WriteLine();
         Console.Write("Ditt val: ");
     }

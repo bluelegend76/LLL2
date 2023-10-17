@@ -4,7 +4,7 @@ public class Storage
 {
     private Slot[] _storage;
     private const int DefaultCapacity = 20;
-    // _palletIDIndexNum
+    public static int CurrentIDNum { get; set; } = 1;
 
     public Storage()
     {
@@ -28,22 +28,41 @@ public class Storage
         // return _storage;
 
         // HACK: = Move to test-function.
-        _storage[0].Items.Add(new Pallet("AB123", Type.Hel, "2023-09-15 17:48:20"));
-        _storage[1].Items.Add(new Pallet("BD234", Type.Halv, "2023-09-15 10:30:10"));
-        _storage[1].Items.Add(new Pallet("DE345", Type.Halv, "2023-09-15 17:05:00"));
-        _storage[8].Items.Add(new Pallet("XX672", Type.Hel, "2023-09-25 10:25:05"));
-        _storage[10].Items.Add(new Pallet("YY423", Type.Halv, "2023-09-14 12:20:32"));
-        _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-31 13:08:32"));  // Sic
+        _storage[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
+        _storage[1].Items.Add(new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
+        _storage[1].Items.Add(new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
+        _storage[8].Items.Add(new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
+        _storage[10].Items.Add(new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
+        _storage[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));  // Sic
         // _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-41 17:05:32"));  // Sic
     }
 
+    // Store()
     // public void Add(Pallet pallet)
     // {
     //     _storage[0].Add = pallet;
+    // }
+    // TODO: Get index of next slot with Slot.CapacityLeft matching PalletType.
+    // TODO: 
 
-    // Store()
+    public int NextAvailable(Storage storage, Pallet p)
+    {
+        var result = -1;
+        for (var i = 0; i < storage._storage.Length; i++)
+        {
+            if (storage._storage[i].CapacityLeft == p.PalletType)
+            {
+                result = i;
+            }
+            // else
+            // {
+            //     
+            // }
+        }
 
-    // NextAvailable()
+        return result;
+    }
+    
 
     public static void Show(Storage storage)
     {
@@ -71,7 +90,7 @@ public class Storage
         var n = 1;
         var result = "";
         result += "  ID \tTyp \tAnkom" + Environment.NewLine;
-         result += "------------------------------------" + Environment.NewLine;
+        result += "------------------------------------" + Environment.NewLine;
         foreach (var slot in _storage)
         {
             result += $"Plats {n}:" + Environment.NewLine;

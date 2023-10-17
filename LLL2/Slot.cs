@@ -5,7 +5,7 @@ public class Slot
     // Initialize list to hold items for one storage slot.
     // TODO: Make Items private + rename to _slot(s)/_pallet(s)?.
     public List<Pallet> Items = new List<Pallet>();
-    public Type CapacityLeft { get; set; } = Type.Hel;
+    public Type CapacityLeft { get; private set; } = Type.Hel;
         // REFACTOR?: FreeCapacity
 
         // public static List<Pallet> Init() => new List<Pallet>();
@@ -25,10 +25,6 @@ public class Slot
     private void AdjustCapacity(Slot s, Pallet p)
     {
         s.CapacityLeft -= p.PalletType;
-        // var capacityLeft = s.CapacityLeft as int - p.PalletType as int;
-        // s.CapacityLeft = capacityLeft as Type;
-        // var capacityLeft = (int)s.CapacityLeft - (int)p.PalletType;
-        // s.CapacityLeft = (Type)capacityLeft;
     }
     
     public override string ToString()
