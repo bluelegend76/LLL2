@@ -2,16 +2,17 @@ namespace LLL2;
 
 public class Storage
 {
-    private Slot[] _storage;
     private const int DefaultCapacity = 20;
+    private readonly Slot[] _storage;
+    public Slot[] Slots => _storage;
     public static int CurrentIDNum { get; set; } = 1;
 
     public Storage()
     {
         _storage = new Slot[DefaultCapacity];
-        for (var i = 0; i < _storage.Length; i++)
+        for (var i = 0; i < Slots.Length; i++)
         {
-            _storage[i] = new Slot();
+            Slots[i] = new Slot();
         }
         // LATER: Possible checkup on ref in foreach loop
         // foreach (ref Slot slot in _storage)
@@ -28,42 +29,37 @@ public class Storage
         // return _storage;
 
         // HACK: = Move to test-function.
-        _storage[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
-        _storage[1].Items.Add(new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
-        _storage[1].Items.Add(new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
-        _storage[8].Items.Add(new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
-        _storage[10].Items.Add(new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
-        _storage[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));  // Sic
+        Slots[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
+        Slots[1].Items.Add(new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
+        Slots[1].Items.Add(new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
+        Slots[8].Items.Add(new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
+        Slots[10].Items.Add(new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
+        Slots[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
         // _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-41 17:05:32"));  // Sic
     }
 
     // Store()
-    // public void Add(Pallet pallet)
-    // {
-    //     _storage[0].Add = pallet;
-    // }
-    // TODO: Get index of next slot with Slot.CapacityLeft matching PalletType.
-    // TODO: 
-
-    public int NextAvailable(Storage storage, Pallet p)
+    public void Store(Pallet pallet)
     {
-        var result = -1;
-        for (var i = 0; i < storage._storage.Length; i++)
+        // _storage[0].Add = pallet;
+    }
+    // TODO: Get index of next slot, with Slot.CapacityLeft matching PalletType.
+
+    public Slot NextAvailable(Storage storage, Pallet p)
+    {
+        // TODO: Possibly revert if-statement to reduce nesting.
+        for (var i = 0; i < storage.Slots.Length; i++)
         {
-            if (storage._storage[i].CapacityLeft == p.PalletType)
+            if (storage.Slots[i].CapacityLeft == p.PalletType)
             {
-                result = i;
+                return Slots[i];
+                // break;
             }
-            // else
-            // {
-            //     
-            // }
         }
 
-        return result;
+        return null;
     }
     
-
     public static void Show(Storage storage)
     {
         // Handled by ToString()-overrides in classes

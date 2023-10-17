@@ -8,6 +8,7 @@ internal class L3Storage
      *     - a modestly advanced Storage Utility -
      *               ( aka C.R.A.P. )
      *************************************************/
+// TODO: May want to test adding documentation comments (=three slashes).
 
     public static void Main()
     {

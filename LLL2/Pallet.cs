@@ -28,7 +28,6 @@ public class Pallet
     // REFACTOR: May want to use a string as an ID template.
     // example: "aaa00000"
     // TODO: Ask .B how to implement according to above.
-    // TODO: May want to test documentation comments (=three slashes).
     private string GenerateID()
     {
         string idNum = $"{Storage.CurrentIDNum:D3}";
@@ -37,6 +36,7 @@ public class Pallet
         return palletID;
     }
 
+    // TODO: May want to add field separator (ToString vs csv).
     public override string ToString()
     {
         CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE");
