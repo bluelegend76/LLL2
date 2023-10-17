@@ -10,23 +10,11 @@ public class Storage
     public Storage()
     {
         _storage = new Slot[DefaultCapacity];
+        // TODO: May want to use _storage instead of Slots in the loop as well.
         for (var i = 0; i < Slots.Length; i++)
         {
             Slots[i] = new Slot();
         }
-        // LATER: Possible checkup on ref in foreach loop
-        // foreach (ref Slot slot in _storage)
-        // {
-        //     slot = new Slot();
-        //
-        // +Suggested Workaround:
-        //     Get the property that you want to modify by reference.
-        //     ref var property = ref slot.Property;
-        //
-        //     Modify the property.
-        //     property = newValue;
-        // }
-        // return _storage;
 
         // HACK: = Move to test-function.
         Slots[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
@@ -45,14 +33,14 @@ public class Storage
     }
     // TODO: Get index of next slot, with Slot.CapacityLeft matching PalletType.
 
-    public Slot NextAvailable(Storage storage, Pallet p)
+    public Slot NextAvailable(Pallet p)
     {
-        // TODO: Possibly revert if-statement to reduce nesting.
-        for (var i = 0; i < storage.Slots.Length; i++)
+        // TODO: Possibly (+if feasible) revert if-statement to reduce nesting.
+        foreach (var slot in Slots)
         {
-            if (storage.Slots[i].CapacityLeft == p.PalletType)
+            if (slot.CapacityLeft == p.PalletType)
             {
-                return Slots[i];
+                return slot;
                 // break;
             }
         }
@@ -62,6 +50,7 @@ public class Storage
     
     public static void Show(Storage storage)
     {
+        // TODO?: Move report header and separator from ToString()-overrides to here.
         // Handled by ToString()-overrides in classes
         // Storage, Slot and Pallet.
         Console.WriteLine(storage);
@@ -93,15 +82,15 @@ public class Storage
             result += slot;
             n++;
         }
-        // foreach (var slot in _storage.Select((value, i) => new { value, i }))
+        // foreach (var slot in Slots.Select((value, i) => new { value, i }))
         // {
         //     // use slot.value and slot.index in here
         // }
         return result;
-        // for (var i = 0; i < _storage.Length; i++)
+        // for (var i = 0; i < Slots.Length; i++)
         // {
         //     result += $"Plats {i+1}:" + Environment.NewLine;
-        //     result += _storage[i];
+        //     result += Slots[i];
         //     // + Environment.NewLine;
         // }
         // Console.WriteLine(slot.ToString());
