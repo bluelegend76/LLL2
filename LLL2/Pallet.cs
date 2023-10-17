@@ -30,7 +30,7 @@ public class Pallet
     // TODO: Ask .B how to implement according to above.
     private string GenerateID()
     {
-        string idNum = $"{Storage.CurrentIDNum:D3}";
+        string idNum = $"{Storage.CurrentIDNum:C2}";
         var palletID = $"LL{idNum}";
         Storage.CurrentIDNum++;
         return palletID;

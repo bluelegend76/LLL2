@@ -26,7 +26,7 @@ public class Slot
     {
         s.CapacityLeft -= p.PalletType;
     }
-    
+
     public override string ToString()
     {
         var result = "";
