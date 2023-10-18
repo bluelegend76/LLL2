@@ -17,13 +17,10 @@ internal class L3Storage
     public static void Main()
     {
           // l3Storage.Initialize();
-        var l3Storage = new Storage();
         Storage.Run();
           // Console.WriteLine(l3Storage);
         // Storage.Show(l3Storage);
-        Console.ReadKey();
+        // Console.ReadKey();
         // l3Storage.NextAvailable(l3Storage, new Pallet(10, 10, 10, 10, 10));
     }
-
-    // TODO: Move out to own class?
 }

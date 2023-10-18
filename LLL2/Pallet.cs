@@ -18,6 +18,7 @@ public class Pallet
         TimeStamp = DateTime.Now;
     }
 
+    // Constructor used for adding some test pallets
     public Pallet(string palletID, Type palletType, string timeStamp)
     {
         PalletID = palletID;
@@ -27,7 +28,6 @@ public class Pallet
 
     // REFACTOR: May want to use a string as an ID template.
     // example: "aaa00000"
-    // TODO: Ask .B how to implement according to above.
     private string GenerateID()
     {
         string idNum = $"{Storage.CurrentIDNum:C2}";
