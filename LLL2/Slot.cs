@@ -22,9 +22,15 @@ public class Slot
        //
     // Store()/CanStore()  // Or move to different class?
 
+    // TODO: CHANGE METHOD TO TAKE  SLOT AND TYPE
     public static void AdjustCapacity(Slot s, Pallet p)
     {
         s.CapacityLeft -= p.PalletType;
+    }
+    
+    public static void AdjustCapacity(Slot s, Type type)
+    {
+        s.CapacityLeft -= type;
     }
 
     public override string ToString()

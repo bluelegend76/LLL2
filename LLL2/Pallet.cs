@@ -16,6 +16,9 @@ public class Pallet
         PalletID = GenerateID();
         PalletType = palletType;
         TimeStamp = DateTime.Now;
+
+        // TEST/TODO: Way of getting info about found/allotted slot back to constructor
+        // i.e. using Slot.AdjustCapacity directly at construction of a Pallet
     }
 
     // Constructor used for adding some test pallets

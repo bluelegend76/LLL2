@@ -143,21 +143,53 @@ public class Storage
 
     private static void Store()
     {
-        // public void Store(new Pallet())
-        Console.WriteLine("Stub for: Adding a pallet to inventory.");
-        // TODO: Get index of next slot, with Slot.CapacityLeft matching PalletType.
-        // if NextAvailable(p) == null
-        //   No space available
-        //   Tip: Try packing the storage
+        Console.WriteLine("Lagra en pall ---- ");
+        Console.Write("Ange palltyp [ 1 = Halv  2 = Hel ]: ");
+        string? type = Console.ReadLine();
+
+        Type palletType = Type.None;
+        while (true)
+        {
+            switch (type)
+            {
+                case "1":
+                    palletType = Type.Halv;
+                    break;
+                case "2":
+                    palletType = Type.Hel;
+                    break;
+                default:
+                    Console.WriteLine("Ogiltigt val. Försök igen.");
+                    break;
+            }
+
+            break;
+        }
+
+        Slot slot = NextAvailable(palletType);
+        if (slot == null)
+        {
+            Console.WriteLine("Ingen plats tillgänglig.");
+            Console.WriteLine("Tips: Prova att packa lagret.");
+        }
+        else
+        {
+            slot.Items.Add(new Pallet(palletType));
+            Slot.AdjustCapacity(slot, palletType);
+            var storageSpot = Array.IndexOf(Slots, slot) + 1;
+            Console.WriteLine($"Pallen lades till på plats {storageSpot}");
+        }
+
+        Console.ReadKey();
     }
 
-    private Slot NextAvailable(Pallet pallet)
+    private static Slot NextAvailable(Type type)
     {
-        // Note: Possibly (+if feasible) revert if-statement to reduce nesting.
         // Using LinQ: return Slots.FirstOrDefault(slot => slot.CapacityLeft >= pallet.PalletType);
+        // Note: Possibly (+if feasible) revert if-statement to reduce nesting.
         foreach (var slot in Slots)
         {
-            if (slot.CapacityLeft >= pallet.PalletType)
+            if (slot.CapacityLeft >= type)
             {
                 return slot;
                 // break;
@@ -179,6 +211,8 @@ public class Storage
 
     private static (Pallet? pallet, Slot? slot) Find()
     {
+        // TODO? Print "Sök efter en pall"
+ 
         string? query;
         bool IsValidID(string? s) => !string.IsNullOrEmpty(query)
                                      && Regex.IsMatch(query, "^[A-Za-z]{2}[0-9]{3}$");
@@ -193,6 +227,8 @@ public class Storage
             }
         
             Console.WriteLine("Ogiltigt ID. Försök igen.");
+            Console.ReadKey();
+            Console.Clear();
         }
         // while (true)
         // {
@@ -266,6 +302,7 @@ public class Storage
 
     private static void Move()
     {
+        // TODO: Print "Flytta en pall ----"
         Find();
         // !IsNullOrEmpty
         // if Slot.CapacityLeft < p.PalletType
@@ -277,7 +314,7 @@ public class Storage
     // GetPallet() Fetch() Deliver()
     private static void Remove()
     {
-        // Console.WriteLine("Stub for: Remove.");
+        Console.WriteLine("Leverera pall ----");
         Find();
         //  CalculateFee()
         // TODO: log to checkouts.log.csv
