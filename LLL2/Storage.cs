@@ -1,31 +1,54 @@
 namespace LLL2;
 
+using System.Text.RegularExpressions;
+
 public class Storage
 {
     private const int DefaultCapacity = 20;
-    private readonly Slot[] _storage;
-    private Slot[] Slots => _storage;
+
+    private static Slot[]? Slots { get; set; }
+
     public static int CurrentIDNum { get; set; } = 1;
 
     private Storage()
     {
-        _storage = new Slot[DefaultCapacity];
+        Slots = new Slot[DefaultCapacity];
         // TODO: May want to use _storage instead of Slots in the loop as well.
         for (var i = 0; i < Slots.Length; i++)
         {
             Slots[i] = new Slot();
         }
-
+ 
         // HACK: = Move to test-function +(!!) Adjust slot-capacity accordingly.
         Slots[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
+        Slot.AdjustCapacity(Slots[0], Slots[0].Items[0]);
         Slots[1].Items.Add(new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
+        Slot.AdjustCapacity(Slots[1], Slots[1].Items[0]);
         Slots[1].Items.Add(new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
+        Slot.AdjustCapacity(Slots[1], Slots[1].Items[1]);
         Slots[8].Items.Add(new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
+        Slot.AdjustCapacity(Slots[8], Slots[8].Items[0]);
         Slots[10].Items.Add(new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
+        Slot.AdjustCapacity(Slots[10], Slots[10].Items[0]);
         Slots[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
+        Slot.AdjustCapacity(Slots[18], Slots[18].Items[0]);
+        // Slot.AdjustCapacity(Slots[0], new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
+        // Slot.AdjustCapacity(Slots[1], new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
+        // Slot.AdjustCapacity(Slots[1], new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
+        // Slot.AdjustCapacity(Slots[8], new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
+        // Slot.AdjustCapacity(Slots[10], new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
+        // Slot.AdjustCapacity(Slots[18], new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
         // _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-41 17:05:32"));  // Sic
     }
 
+    private static void AddTestPallets()
+    {
+        // for i in positions-Array
+        //   unpack tuples of pallet-info in palletsinfo-array
+        //   Add new testpallet
+        //   +call Slot.AdjustCapacity
+    }
+    
     private static void Menu()
     {
         var options = new List<string>
@@ -45,13 +68,14 @@ public class Storage
         Console.WriteLine("Huvudmeny:");
         // Using a method group instead of a lambda expression
         options.ForEach(Console.WriteLine);
-        // options.ForEach(option => Console.WriteLine(option));
+          // options.ForEach(option => Console.WriteLine(option));
         Console.WriteLine();  // \n (?)
         Console.Write("Ditt val: ");
     }
 
     public static void Run() {
 
+        // TODO: var l3Storage may be redundant
         var l3Storage = new Storage();
         var run = true;
         while (run)
@@ -65,12 +89,12 @@ public class Storage
             var actions = new Dictionary<string, Action>
             {
                 { "1", Store },
-                { "2", Find },
+                { "2", () => Find() },
                 { "3", Move },
                 { "4", () => Show(l3Storage) },
                 { "5", Remove },
                 { "6", Pack },
-                { "0", () => { Console.WriteLine("Programmet avslutas. Välkommen tillbaka.");
+                { "0", () => { Console.WriteLine("Pallar du inte mer? KTHXBYE! %}");
                                run = false;
                                Environment.Exit(0); } },
             };
@@ -117,24 +141,23 @@ public class Storage
     }
 
 
-    // Store()
     private static void Store()
     {
-        // public void Store(Pallet p)
+        // public void Store(new Pallet())
         Console.WriteLine("Stub for: Adding a pallet to inventory.");
-        // _storage[0].Add = pallet;
         // TODO: Get index of next slot, with Slot.CapacityLeft matching PalletType.
         // if NextAvailable(p) == null
         //   No space available
         //   Tip: Try packing the storage
     }
 
-    private Slot NextAvailable(Pallet p)
+    private Slot NextAvailable(Pallet pallet)
     {
-        // TODO: Possibly (and if feasible) revert if-statement to reduce nesting.
+        // Note: Possibly (+if feasible) revert if-statement to reduce nesting.
+        // Using LinQ: return Slots.FirstOrDefault(slot => slot.CapacityLeft >= pallet.PalletType);
         foreach (var slot in Slots)
         {
-            if (slot.CapacityLeft == p.PalletType)
+            if (slot.CapacityLeft >= pallet.PalletType)
             {
                 return slot;
                 // break;
@@ -144,6 +167,7 @@ public class Storage
         return null;
     }
 
+    // TODO: Sending in Storage is probably superfluous
     private static void Show(Storage storage)
     {
         // TODO?: Move report header and separator for ToString()-overrides to here.
@@ -153,21 +177,97 @@ public class Storage
         Console.ReadKey();
     }
 
-    private static void Find()
+    private static (Pallet? pallet, Slot? slot) Find()
     {
-        Console.WriteLine("Stub for: Find pallet in storage.");
-        // Console.Write("Ange pall-ID: ");
-        // TODO: Add case insensitivity.
-        // Test pattern with Regex: ^[A-Z]{2}[0-9]{3}$
-        // string palletID = Console.ReadLine();
-        // TODO: Test using LinQ to search for PalletID.
+        string? query;
+        bool IsValidID(string? s) => !string.IsNullOrEmpty(query)
+                                     && Regex.IsMatch(query, "^[A-Za-z]{2}[0-9]{3}$");
+        while (true)
+        {
+            Console.Write("Ange pall-ID: ");
+            query = Console.ReadLine();
+
+            if (IsValidID(query))
+            {
+                break;
+            }
+        
+            Console.WriteLine("Ogiltigt ID. Försök igen.");
+        }
+        // while (true)
+        // {
+        //     Console.Write("Ange pall-ID: ");
+        //     query = Console.ReadLine();
+
+        //     if (string.IsNullOrEmpty(query))
+        //     {
+        //         Console.WriteLine("Ogiltigt ID. Försök igen.");
+        //         continue;
+        //     }
+        //     
+        //     if (Regex.IsMatch(query, "^[A-Z]{2}[0-9]{3}$"))
+        //     {
+        //         break;
+        //     }
+
+        //     Console.WriteLine("Ogiltigt ID. Försök igen.");
+        // }
+        var palletID = query.ToUpper();
+
+        (Pallet? pallet, Slot? slot) ps = (null, null);
+        // foreach (var s in Slots)
+        // {
+        //   (ps.pallet, ps.slot) = (s.Items.Find(p => p.PalletID == palletID), s);
+        // }
+        // (Pallet? pallet, Slot? slot) ps = (null, null);
+
+        foreach (var s in Slots)
+        {
+            // if (s.Items.Find(p => p.PalletID == palletID) is not { } foundPallet) continue;
+            // ps = (foundPallet, s);
+            // break;
+            var foundPallet = s.Items.Find(p => p.PalletID == palletID);
+            if (foundPallet is null)
+            {
+                continue;
+            }
+            ps = (foundPallet, s);
+            break;
+        }
+
+        // if (pallet != null)
+        // {
+        //   // Do something with the pallet and slot.
+        // }
+        // Pallet? pallet = null;
+        // foreach (var slot in Slots)
+        // {
+        //     pallet = slot.Items.Find(p => p.PalletID == palletID);
+        // }
+        
+        if (ps.pallet == null)
+        {
+            Console.WriteLine($"Pallen {palletID} hittades inte.");
+        }
+        else
+        {
+            var storageSpot = Array.IndexOf(Slots, ps.slot) + 1;
+            Console.WriteLine($"Pallen {palletID} finns på plats {storageSpot}.");
+        }
+        Console.ReadKey();
+        // Console.WriteLine(ps.pallet == null
+        //     ? $"Pallen {palletID} hittades inte."
+        //     : $"Pallen {palletID} finns på plats .");
+        // Console.ReadKey();
+        
+        return (ps.pallet, ps.slot);
         // or return null/-1 if pallet not found
     }
 
     private static void Move()
     {
-        Console.WriteLine("Stub for: Move pallet.");
-        // Find(palletID)
+        Find();
+        // !IsNullOrEmpty
         // if Slot.CapacityLeft < p.PalletType
         //   Add pallet to slot
         // else
@@ -177,10 +277,11 @@ public class Storage
     // GetPallet() Fetch() Deliver()
     private static void Remove()
     {
-        Console.WriteLine("Stub for: Remove.");
-        // Find(palletID)
+        // Console.WriteLine("Stub for: Remove.");
+        Find();
         //  CalculateFee()
         // TODO: log to checkouts.log.csv
+        // The actual remove
     }
 
     // Optimize()

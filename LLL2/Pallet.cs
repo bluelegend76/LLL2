@@ -26,11 +26,11 @@ public class Pallet
         TimeStamp = DateTime.Parse(timeStamp);
     }
 
-    // REFACTOR: May want to use a string as an ID template.
+    // LATER REFACTOR: May want to use a string as an ID template.
     // example: "aaa00000"
     private string GenerateID()
     {
-        string idNum = $"{Storage.CurrentIDNum:C2}";
+        string idNum = $"{Storage.CurrentIDNum:D3}";
         var palletID = $"LL{idNum}";
         Storage.CurrentIDNum++;
         return palletID;
