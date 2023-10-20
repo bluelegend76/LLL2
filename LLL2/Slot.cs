@@ -7,7 +7,7 @@ public class Slot
     // Initialize list to hold items for one storage slot.
     // TODO: Make Items private + rename to _slot(s)/_pallet(s)?.
     public List<Pallet> Items { get; set; } = new List<Pallet>();
-    public Type CapacityLeft { get; private set; } = Type.Hel;
+    public Type CapacityLeft { get; set; } = Type.Hel;
 
     // public Slot()
     // {
@@ -23,6 +23,8 @@ public class Slot
     // Store()/CanStore()  // Or move to different class?
 
     // TODO: CHANGE METHOD TO TAKE  SLOT AND TYPE
+    // +FUTURE: Generalize method to work
+    // for both(!!) add and remove
     public static void AdjustCapacity(Slot s, Pallet p)
     {
         s.CapacityLeft -= p.PalletType;

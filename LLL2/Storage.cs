@@ -41,13 +41,13 @@ public class Storage
         // _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-41 17:05:32"));  // Sic
     }
 
-    private static void AddTestPallets()
-    {
-        // for i in positions-Array
-        //   unpack tuples of pallet-info in palletsinfo-array
-        //   Add new testpallet
-        //   +call Slot.AdjustCapacity
-    }
+    // private static void AddTestPallets()
+    // {
+    //     // for i in positions-Array
+    //     //   unpack tuples of pallet-info in palletsinfo-array
+    //     //   Add new testpallet
+    //     //   +call Slot.AdjustCapacity
+    // }
     
     private static void Menu()
     {
@@ -89,10 +89,10 @@ public class Storage
             var actions = new Dictionary<string, Action>
             {
                 { "1", Store },
-                { "2", () => Find() },
+                { "2", () => Search() },
                 { "3", Move },
                 { "4", () => Show(l3Storage) },
-                { "5", Remove },
+                { "5", Deliver },
                 { "6", Pack },
                 { "0", () => { Console.WriteLine("Pallar du inte mer? KTHXBYE! %}");
                                run = false;
@@ -113,7 +113,7 @@ public class Storage
             //         Store();
             //         break;
             //     case "2":
-            //         Find();
+            //         Search();
             //         break;
             //     case "3":
             //         Move();
@@ -122,7 +122,7 @@ public class Storage
             //         Show(l3Storage);
             //         break;
             //     case "5":
-            //         Remove();
+            //         Deliver();
             //         break;
             //     case "6":
             //         Pack();
@@ -209,7 +209,7 @@ public class Storage
         Console.ReadKey();
     }
 
-    private static (Pallet? pallet, Slot? slot) Find()
+    private static (Pallet? pallet, Slot? slot) Search()
     {
         // TODO? Print "Sök efter en pall"
  
@@ -302,23 +302,76 @@ public class Storage
 
     private static void Move()
     {
-        // TODO: Print "Flytta en pall ----"
-        Find();
-        // !IsNullOrEmpty
-        // if Slot.CapacityLeft < p.PalletType
-        //   Add pallet to slot
+        Console.WriteLine("Flytta en pall ----");
+        // Search for a pallet via its ID-string
+        var (foundPallet, foundSlot) = Search();
+        // = Using variable deconstruction to get
+        // the values returned from a Pallet-search
+        // TODO: May only need one '!= null' test
+        // if (foundSlot == null)
+        // {
+        //     Console.ReadKey();
+        //     // return;
+        // }
         // else
-        //   "Could not move to that slot"
-    }
+        if (foundSlot != null && foundPallet != null)
+        {
+            Console.WriteLine($"Plats att flytta till [1-{DefaultCapacity}]:");
 
+            var input = "";
+            while (true)
+            {
+              input = Console.ReadLine();
+
+              // !IsNullOrEmpty ??
+              if ((input ?? "").Length == 0 || !Regex.IsMatch(input, "^([1-9]|1[0-9]|20)$"))
+              {
+                Console.WriteLine("1 till 20. Prova igen.");
+                continue;
+              }
+
+              break;
+            }
+
+            var targetSpot = int.Parse(input);
+            var targetIndex = targetSpot - 1;
+            var targetSlot = Slots[targetIndex];
+
+            if (targetSlot.CapacityLeft >= foundPallet.PalletType)
+            {
+                targetSlot.Items.Add(foundPallet);
+                Slot.AdjustCapacity(targetSlot, foundPallet);
+                foundSlot.Items.Remove(foundPallet);
+                targetSlot.CapacityLeft = (foundPallet.PalletType == Type.Hel)
+                    ? Type.None
+                    : Type.Halv;
+                // targetSlot.CapacityLeft += foundPallet.PalletType;
+                // Slot.AdjustCapacity(foundSlot, foundPallet);
+                Console.WriteLine($"Pallen flyttad till plats {targetSpot}.");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.WriteLine($"För lite utrymme på plats {targetSpot}.");
+                Console.ReadKey();
+            }
+            
+            // +FOR REFERENCE: Adjust 'Add' and Adjust 'Remove'
+            // Slot.AdjustCapacity(targetSlot, foundPallet, 'A');
+            // Slot.AdjustCapacity(foundSlot, foundPallet, 'R');
+        }
+    }
+    
     // GetPallet() Fetch() Deliver()
-    private static void Remove()
+    private static void Deliver()
     {
         Console.WriteLine("Leverera pall ----");
-        Find();
-        //  CalculateFee()
-        // TODO: log to checkouts.log.csv
+        Search();
+        // Report days + hours in storage
+        // CalculateFee()
         // The actual remove
+
+        // TODO: log to checkouts.log.csv
     }
 
     // Optimize()
