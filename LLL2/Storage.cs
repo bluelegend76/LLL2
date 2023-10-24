@@ -2,24 +2,30 @@ namespace LLL2;
 
 using System.Text.RegularExpressions;
 
+// NOTE TO SELF: May want to test adding documentation comments (=three slashes).
 public class Storage
 {
     private const int DefaultCapacity = 20;
 
+    // Flera sättningar av grundläggande inställningar
+    // för klasserna experimentella för nuvarande
+    // (=nullable eller inte mm)
     private static Slot[]? Slots { get; set; }
 
+    // Seed for generating number part of Pallet ID
     public static int CurrentIDNum { get; set; } = 1;
 
     private Storage()
     {
         Slots = new Slot[DefaultCapacity];
-        // TODO: May want to use _storage instead of Slots in the loop as well.
+
+        // Initialize storage array with slot-lists.
         for (var i = 0; i < Slots.Length; i++)
         {
             Slots[i] = new Slot();
         }
  
-        // HACK: = Move to test-function +(!!) Adjust slot-capacity accordingly.
+        // HACK: Move to separate test-function later.
         Slots[0].Items.Add(new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
         Slot.AdjustCapacity(Slots[0], Slots[0].Items[0]);
         Slots[1].Items.Add(new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
@@ -32,27 +38,19 @@ public class Storage
         Slot.AdjustCapacity(Slots[10], Slots[10].Items[0]);
         Slots[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
         Slot.AdjustCapacity(Slots[18], Slots[18].Items[0]);
-        // Slot.AdjustCapacity(Slots[0], new Pallet("TT001", Type.Hel, "2023-09-15 17:48:20"));
-        // Slot.AdjustCapacity(Slots[1], new Pallet("TT002", Type.Halv, "2023-09-15 10:30:10"));
-        // Slot.AdjustCapacity(Slots[1], new Pallet("TT003", Type.Halv, "2023-09-15 17:05:00"));
-        // Slot.AdjustCapacity(Slots[8], new Pallet("TT004", Type.Hel, "2023-09-25 10:25:05"));
-        // Slot.AdjustCapacity(Slots[10], new Pallet("TT005", Type.Halv, "2023-09-14 12:20:32"));
-        // Slot.AdjustCapacity(Slots[18], new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
-        // _storage[18].Items.Add(new Pallet("YZ225", Type.Hel, "2023-07-41 17:05:32"));  // Sic
     }
 
     // private static void AddTestPallets()
     // {
-    //     // for i in positions-Array
-    //     //   unpack tuples of pallet-info in palletsinfo-array
-    //     //   Add new testpallet
-    //     //   +call Slot.AdjustCapacity
+         // Snags and unclear implementation at first design-stage.
     // }
     
     private static void Menu()
     {
         var options = new List<string>
         {
+            // Tip/Idea: Merging Menu and Switch into an Object
+            // + generate numbering for menu.
             "1) Registrera en pall",
             "2) Sök pall i lager",
             "3) Flytta pall",
@@ -68,8 +66,8 @@ public class Storage
         Console.WriteLine("Huvudmeny:");
         // Using a method group instead of a lambda expression
         options.ForEach(Console.WriteLine);
-          // options.ForEach(option => Console.WriteLine(option));
-        Console.WriteLine();  // \n (?)
+        // options.ForEach(option => Console.WriteLine(option));
+        Console.WriteLine();
         Console.Write("Ditt val: ");
     }
 
@@ -84,8 +82,8 @@ public class Storage
  
             string choice = Console.ReadLine();
             Console.Clear();
-                // Clearing the scrollback buffer
-                // Console.WriteLine("\x1b[3J");
+            // Valde att testa en dictionary-lösning
+            // vilket blev väldigt koncist.
             var actions = new Dictionary<string, Action>
             {
                 { "1", Store },
@@ -94,11 +92,11 @@ public class Storage
                 { "4", () => Show(l3Storage) },
                 { "5", Deliver },
                 { "6", Pack },
-                { "0", () => { Console.WriteLine("Pallar du inte mer? KTHXBYE! %}");
+                { "0", () => { Console.WriteLine("Programmet avslutas. Välkommen tillbaks.");
                                run = false;
                                Environment.Exit(0); } },
             };
-                // string choice = Console.ReadLine();
+
             if (actions.ContainsKey(choice))
             {
                 actions[choice]();
@@ -141,6 +139,8 @@ public class Storage
     }
 
 
+    // Tips/Idé: Plocka ut att ta input från användaren
+    // till separat metod.
     private static void Store()
     {
         Console.WriteLine("Lagra en pall ---- ");
@@ -176,6 +176,8 @@ public class Storage
         {
             slot.Items.Add(new Pallet(palletType));
             Slot.AdjustCapacity(slot, palletType);
+            // Save number for storage spot
+            // i.e. one higher than storage spot.
             var storageSpot = Array.IndexOf(Slots, slot) + 1;
             Console.WriteLine($"Pallen lades till på plats {storageSpot}");
         }
@@ -185,35 +187,38 @@ public class Storage
 
     private static Slot NextAvailable(Type type)
     {
-        // Using LinQ: return Slots.FirstOrDefault(slot => slot.CapacityLeft >= pallet.PalletType);
-        // Note: Possibly (+if feasible) revert if-statement to reduce nesting.
+        // Tip/Note on using LinQ: return Slots.FirstOrDefault(slot => slot.CapacityLeft >= pallet.PalletType);
         foreach (var slot in Slots)
         {
             if (slot.CapacityLeft >= type)
             {
                 return slot;
-                // break;
             }
         }
 
+        // If no slot can hold pallet.
         return null;
     }
 
     // TODO: Sending in Storage is probably superfluous
     private static void Show(Storage storage)
     {
-        // TODO?: Move report header and separator for ToString()-overrides to here.
+        // TODO: Move report header and separator for ToString()-overrides to here?
+
         // Handled by ToString()-overrides
-        // in classes Storage, Slot and Pallet.
+        // in classes Storage, Slot and Pallet respectively.
         Console.WriteLine(storage);
         Console.ReadKey();
     }
 
+    // REFACTOR: Returns pallet and slot
+    // to match current signature of Search()
     private static (Pallet? pallet, Slot? slot) Search()
     {
-        // TODO? Print "Sök efter en pall"
- 
         string? query;
+        // Possible REFACTOR: Separate out to
+        // a validation method, that takes
+        // criteria as parameters.
         bool IsValidID(string? s) => !string.IsNullOrEmpty(query)
                                      && Regex.IsMatch(query, "^[A-Za-z]{2}[0-9]{3}$");
         while (true)
@@ -230,38 +235,15 @@ public class Storage
             Console.ReadKey();
             Console.Clear();
         }
-        // while (true)
-        // {
-        //     Console.Write("Ange pall-ID: ");
-        //     query = Console.ReadLine();
 
-        //     if (string.IsNullOrEmpty(query))
-        //     {
-        //         Console.WriteLine("Ogiltigt ID. Försök igen.");
-        //         continue;
-        //     }
-        //     
-        //     if (Regex.IsMatch(query, "^[A-Z]{2}[0-9]{3}$"))
-        //     {
-        //         break;
-        //     }
-
-        //     Console.WriteLine("Ogiltigt ID. Försök igen.");
-        // }
+        // TODO: May want to use case insensitive
+        // string-match instead.
         var palletID = query.ToUpper();
 
         (Pallet? pallet, Slot? slot) ps = (null, null);
-        // foreach (var s in Slots)
-        // {
-        //   (ps.pallet, ps.slot) = (s.Items.Find(p => p.PalletID == palletID), s);
-        // }
-        // (Pallet? pallet, Slot? slot) ps = (null, null);
 
         foreach (var s in Slots)
         {
-            // if (s.Items.Find(p => p.PalletID == palletID) is not { } foundPallet) continue;
-            // ps = (foundPallet, s);
-            // break;
             var foundPallet = s.Items.Find(p => p.PalletID == palletID);
             if (foundPallet is null)
             {
@@ -271,16 +253,6 @@ public class Storage
             break;
         }
 
-        // if (pallet != null)
-        // {
-        //   // Do something with the pallet and slot.
-        // }
-        // Pallet? pallet = null;
-        // foreach (var slot in Slots)
-        // {
-        //     pallet = slot.Items.Find(p => p.PalletID == palletID);
-        // }
-        
         if (ps.pallet == null)
         {
             Console.WriteLine($"Pallen {palletID} hittades inte.");
@@ -291,29 +263,18 @@ public class Storage
             Console.WriteLine($"Pallen {palletID} finns på plats {storageSpot}.");
         }
         Console.ReadKey();
-        // Console.WriteLine(ps.pallet == null
-        //     ? $"Pallen {palletID} hittades inte."
-        //     : $"Pallen {palletID} finns på plats .");
-        // Console.ReadKey();
         
         return (ps.pallet, ps.slot);
-        // or return null/-1 if pallet not found
     }
 
     private static void Move()
     {
         Console.WriteLine("Flytta en pall ----");
-        // Search for a pallet via its ID-string
+
+        // Using variable deconstruction to get
+        // values from Pallet-search.
         var (foundPallet, foundSlot) = Search();
-        // = Using variable deconstruction to get
-        // the values returned from a Pallet-search
-        // TODO: May only need one '!= null' test
-        // if (foundSlot == null)
-        // {
-        //     Console.ReadKey();
-        //     // return;
-        // }
-        // else
+        
         if (foundSlot != null && foundPallet != null)
         {
             Console.WriteLine($"Plats att flytta till [1-{DefaultCapacity}]:");
@@ -323,7 +284,8 @@ public class Storage
             {
               input = Console.ReadLine();
 
-              // !IsNullOrEmpty ??
+              // Testade null-coalescing-operatorn
+              // för att lära om den
               if ((input ?? "").Length == 0 || !Regex.IsMatch(input, "^([1-9]|1[0-9]|20)$"))
               {
                 Console.WriteLine("1 till 20. Prova igen.");
@@ -335,18 +297,21 @@ public class Storage
 
             var targetSpot = int.Parse(input);
             var targetIndex = targetSpot - 1;
+            // Save target-slot as opposed to its index.
             var targetSlot = Slots[targetIndex];
 
             if (targetSlot.CapacityLeft >= foundPallet.PalletType)
             {
+                // TODO: Implement capacity adjustment
+                // of slot with boolean flag
+                // directly when adding/removing a pallet.
+                // Current solution very ad hoc.
                 targetSlot.Items.Add(foundPallet);
                 Slot.AdjustCapacity(targetSlot, foundPallet);
                 foundSlot.Items.Remove(foundPallet);
                 targetSlot.CapacityLeft = (foundPallet.PalletType == Type.Hel)
                     ? Type.None
                     : Type.Halv;
-                // targetSlot.CapacityLeft += foundPallet.PalletType;
-                // Slot.AdjustCapacity(foundSlot, foundPallet);
                 Console.WriteLine($"Pallen flyttad till plats {targetSpot}.");
                 Console.ReadKey();
             }
@@ -355,45 +320,98 @@ public class Storage
                 Console.WriteLine($"För lite utrymme på plats {targetSpot}.");
                 Console.ReadKey();
             }
-            
-            // +FOR REFERENCE: Adjust 'Add' and Adjust 'Remove'
-            // Slot.AdjustCapacity(targetSlot, foundPallet, 'A');
-            // Slot.AdjustCapacity(foundSlot, foundPallet, 'R');
         }
     }
     
-    // GetPallet() Fetch() Deliver()
     private static void Deliver()
     {
-        Console.WriteLine("Leverera pall ----");
-        Search();
-        // Report days + hours in storage
-        // CalculateFee()
-        // The actual remove
+        CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE");
 
-        // TODO: log to checkouts.log.csv
+        Console.WriteLine("Leverera pall ----");
+        var (foundPallet, foundSlot) = Search();
+        if (foundSlot != null && foundPallet != null)
+        {
+            // Report days + hours in storage
+            Console.WriteLine($"Lämnar ut pall {foundPallet.PalletID}.");
+
+            var now = DateTime.Now;
+            // Delta time for register-time and delivery-time
+            var timeInStorage = now - foundPallet.TimeStamp;
+
+            // TODO: Already implemented in DateTime?
+            var dayDays = (timeInStorage.Days == 1)
+                ? "dag"
+                : "dagar";
+            var hourHours = (timeInStorage.Hours == 1)
+                ? "timme"
+                : "timmar";
+            Console.WriteLine(
+                $"Pallen har varit i lager {timeInStorage.Days} {dayDays} och {timeInStorage.Hours} {hourHours}.");
+
+            // Should be pulled to separate method CalculateFee()
+            double hourlyFee = (foundPallet.PalletType == Type.Hel)
+                ? 75.0
+                : 39.0;
+            var costTotal = Math.Ceiling(timeInStorage.TotalHours) * hourlyFee;
+            Console.WriteLine($"Kostnaden blev {costTotal:C2}.");
+
+            var p = foundPallet;  // Convenience variable.
+            // TODO: Move logging to separate method.
+            const string logPath = @"..\..\..\checkouts-log.csv";
+            using (var sw = new StreamWriter(logPath, true))
+            {
+                sw.WriteLine($"id{p.PalletID},typ,{p.PalletType},ankom,{p.TimeStamp},utlämnad,{now},tid i lagret,{timeInStorage.Days} {dayDays} {timeInStorage.Hours} {hourHours},kostnad,{costTotal:C2}");
+            }
+
+            // Removing the pallet from storage
+            foundSlot.Items.Remove(foundPallet);
+            foundSlot.CapacityLeft = (foundPallet.PalletType == Type.Hel)
+                ? Type.None
+                : Type.Halv;
+
+            Console.ReadKey();
+        }
     }
 
-    // Optimize()
     private static void Pack()
     {
-        Console.WriteLine("Stub for: Pack storage.");
-        // report slots with only one half-pallet stored
-        // if list of found slots contains odd number (larger than 1)
-        //   shave off last slot
-        //   move slots(nums?) to temporary list; then
-        //   pick half-pallets in pairs from temporary list
-        //+  Add back half-pallets to first available slot in storage
-        //     OR
-        //   Get first slot with Slot.CapacityLeft == Halv
-        //   get pallet from next slot with Slot.CapacityLeft == Halv
-        //   Try using Move for this purpose (+possibly recursive solution)
+        Console.WriteLine("Packa/Optimera lagret: Tillkommer i nästa uppdatering.");
+    // TODO: Last minute attempt not working
+    // + Becomes very hackish when slot is not
+    // automatically capacity-adjusted when adding/removing item.
+    //
+    //   // List of half-sized alone in one slot
+    //   var halfSized = new List<Pallet>();
+    //   foreach (var slot in Slots)
+    //   {
+    //     if (slot.Items.Count == 1 && slot.CapacityLeft == Type.Halv)
+    //     {
+    //       halfSized.Add(slot.Items[0]);
+    //       slot.CapacityLeft = Type.Hel;
+    //       slot.Items.RemoveAt(0);
+    //     }
+    //   }
+    //
+    //   foreach (var pallet in halfSized)
+    //   {
+    //       var slot = NextAvailable(pallet.PalletType);
+    //       slot.Items.Add(pallet);
+    //       Slot.AdjustCapacity(slot, pallet.PalletType);
+    //       slot.CapacityLeft = Type.Halv;
+    //   }
     }
+    // PSEUDO-CODE for updated version:
+    // Condition - Only one half-sized pallet in a slot.
+    //   (slot.Items.Count == 1 && slot.CapacityLeft == Type.Halv)
+    // Make container + save results in storage matching condition.
+    // for (i = 0, countMatching > 1, i + 2)
+    //   move pallet from second slot to first matching slot
     
     public override string ToString()
     {
         var n = 1;
         var result = "";
+
         result += "  ID \tTyp \tAnkom" + Environment.NewLine;
         result += "------------------------------------" + Environment.NewLine;
         foreach (var slot in Slots)
@@ -402,19 +420,7 @@ public class Storage
             result += slot;
             n++;
         }
-        // foreach (var slot in Slots.Select((value, i) => new { value, i }))
-        // {
-        //     // use slot.value and slot.index in here
-        // }
         return result;
-        // for (var i = 0; i < Slots.Length; i++)
-        // {
-        //     result += $"Plats {i+1}:" + Environment.NewLine;
-        //     result += Slots[i];
-        //     // + Environment.NewLine;
-        // }
-        // Console.WriteLine(slot.ToString());
-        // return result;
     }
 
 }

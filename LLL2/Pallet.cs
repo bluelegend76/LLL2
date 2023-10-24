@@ -1,10 +1,9 @@
 namespace LLL2;
 
-// CAN HAS FUNNY LANGUAGES?
-using System.Globalization;
-using static Thread;
-using System.Text;
-
+// REFACTOR: Adding automatic adjustment
+// when pallet gets added to/pulled from a slot.
+// May want to try inheritance, composition
+// or event-signaling via a delegate.
 public class Pallet
 {
     public string PalletID { get; private set; }
@@ -16,12 +15,9 @@ public class Pallet
         PalletID = GenerateID();
         PalletType = palletType;
         TimeStamp = DateTime.Now;
-
-        // TEST/TODO: Way of getting info about found/allotted slot back to constructor
-        // i.e. using Slot.AdjustCapacity directly at construction of a Pallet
     }
 
-    // Constructor used for adding some test pallets
+    // Constructor used for adding some test pallets.
     public Pallet(string palletID, Type palletType, string timeStamp)
     {
         PalletID = palletID;
@@ -29,8 +25,7 @@ public class Pallet
         TimeStamp = DateTime.Parse(timeStamp);
     }
 
-    // LATER REFACTOR: May want to use a string as an ID template.
-    // example: "aaa00000"
+    // Possible Tip: Investigate 'Formatstring Registering'.
     private string GenerateID()
     {
         string idNum = $"{Storage.CurrentIDNum:D3}";
@@ -39,7 +34,6 @@ public class Pallet
         return palletID;
     }
 
-    // TODO: May want to add field separator (ToString vs csv).
     public override string ToString()
     {
         CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo("sv-SE");
