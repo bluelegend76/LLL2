@@ -38,6 +38,12 @@ public class Storage
         Slot.AdjustCapacity(Slots[10], Slots[10].Items[0]);
         Slots[18].Items.Add(new Pallet("TT006", Type.Hel, "2023-07-31 13:08:32"));
         Slot.AdjustCapacity(Slots[18], Slots[18].Items[0]);
+        // ----
+        // Two pallets used for testing the Pack-method:
+        // Slots[12].Items.Add(new Pallet("TT007", Type.Halv, "2023-09-15 17:05:00"));
+        // Slot.AdjustCapacity(Slots[12], Slots[12].Items[0]);
+        // Slots[16].Items.Add(new Pallet("TT008", Type.Halv, "2023-09-14 12:20:32"));
+        // Slot.AdjustCapacity(Slots[16], Slots[16].Items[0]);
     }
 
     // private static void AddTestPallets()
@@ -92,7 +98,7 @@ public class Storage
                 { "4", () => Show(l3Storage) },
                 { "5", Deliver },
                 { "6", Pack },
-                { "0", () => { Console.WriteLine("Programmet avslutas. Välkommen tillbaks.");
+                { "0", () => { Console.WriteLine("Pallar du inte längre? KTHNXBY.");
                                run = false;
                                Environment.Exit(0); } },
             };
@@ -200,7 +206,7 @@ public class Storage
         return null;
     }
 
-    // TODO: Sending in Storage is probably superfluous
+    // TODO: Sending in storage is probably superfluous
     private static void Show(Storage storage)
     {
         // TODO: Move report header and separator for ToString()-overrides to here?
@@ -213,6 +219,7 @@ public class Storage
 
     // REFACTOR: Returns pallet and slot
     // to match current signature of Search()
+    // TODO Important: Correct incorrect adding of 'Pallet=None'
     private static (Pallet? pallet, Slot? slot) Search()
     {
         string? query;
@@ -373,39 +380,31 @@ public class Storage
         }
     }
 
+    // Pack/Optimize storage
+    // (i.e. no half-sized alone in one slot)
     private static void Pack()
     {
-        Console.WriteLine("Packa/Optimera lagret: Tillkommer i nästa uppdatering.");
-    // TODO: Last minute attempt not working
-    // + Becomes very hackish when slot is not
-    // automatically capacity-adjusted when adding/removing item.
-    //
-    //   // List of half-sized alone in one slot
-    //   var halfSized = new List<Pallet>();
-    //   foreach (var slot in Slots)
-    //   {
-    //     if (slot.Items.Count == 1 && slot.CapacityLeft == Type.Halv)
-    //     {
-    //       halfSized.Add(slot.Items[0]);
-    //       slot.CapacityLeft = Type.Hel;
-    //       slot.Items.RemoveAt(0);
-    //     }
-    //   }
-    //
-    //   foreach (var pallet in halfSized)
-    //   {
-    //       var slot = NextAvailable(pallet.PalletType);
-    //       slot.Items.Add(pallet);
-    //       Slot.AdjustCapacity(slot, pallet.PalletType);
-    //       slot.CapacityLeft = Type.Halv;
-    //   }
+        // List for collecting up lone half-pallets
+        var halfSizeOrphans = new List<Pallet>();
+        foreach (var slot in Slots)
+        {
+            // Collect up orphan half-sized
+            if (slot.Items.Count == 1 && slot.CapacityLeft == Type.Halv)
+            {
+                halfSizeOrphans.Add(slot.Items[0]);
+                slot.CapacityLeft = Type.Hel;
+                slot.Items.RemoveAt(0);
+            }
+        }
+
+        // Put orphan half-sized pallets back into storage
+        foreach (var hp in halfSizeOrphans)
+        {
+            Slot nextAvailableSlot = NextAvailable(hp.PalletType);
+            nextAvailableSlot.Items.Add(hp);
+            Slot.AdjustCapacity(nextAvailableSlot, hp);
+        }
     }
-    // PSEUDO-CODE for updated version:
-    // Condition - Only one half-sized pallet in a slot.
-    //   (slot.Items.Count == 1 && slot.CapacityLeft == Type.Halv)
-    // Make container + save results in storage matching condition.
-    // for (i = 0, countMatching > 1, i + 2)
-    //   move pallet from second slot to first matching slot
     
     public override string ToString()
     {

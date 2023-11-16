@@ -1,6 +1,6 @@
 namespace LLL2;
 
-// Tips/Idé: Ändra namn på typen
+// Tips/Idé: Ändra namn på enum
 // till PType eller liknande
 // = tydligare + kan inte krocka
 // med System.Type
