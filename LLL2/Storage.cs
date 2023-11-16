@@ -98,7 +98,7 @@ public class Storage
                 { "4", () => Show(l3Storage) },
                 { "5", Deliver },
                 { "6", Pack },
-                { "0", () => { Console.WriteLine("Pallar du inte längre? KTHNXBY.");
+                { "0", () => { Console.WriteLine("Pallar du inte längre? Ha det fint.");
                                run = false;
                                Environment.Exit(0); } },
             };
@@ -150,10 +150,10 @@ public class Storage
     private static void Store()
     {
         Console.WriteLine("Lagra en pall ---- ");
-        Console.Write("Ange palltyp [ 1 = Halv  2 = Hel ]: ");
+        Console.Write("Välj palltyp [ 1 = Halv 2 = Hel ]: ");
         string? type = Console.ReadLine();
 
-        Type palletType = Type.None;
+        Type palletType;
         while (true)
         {
             switch (type)
@@ -166,8 +166,17 @@ public class Storage
                     break;
                 default:
                     Console.WriteLine("Ogiltigt val. Försök igen.");
-                    break;
+                    type = Console.ReadLine();
+                    continue;
             }
+
+            // // Validate the pallet type
+            // if (palletType == Type.None)
+            // {
+            //     Console.WriteLine("Ogiltigt val. Försök igen.");
+            //     type = Console.ReadLine();
+            //     continue;
+            // }
 
             break;
         }
